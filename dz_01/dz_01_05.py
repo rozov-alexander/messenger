@@ -3,14 +3,17 @@
 
 
 import subprocess
+import platform
+from chardet import detect
 
-args_1 = ['ping', 'yandex.ru', '-c', '4']
-args_2 = ['ping', 'youtube.com', '-c', '4']
-
+code = '-n' if platform.system().lower() == 'windows' else '-c'
+args_1 = ['ping', 'yandex.ru', code, '4']
+args_2 = ['ping', 'youtube.com', code, '4']
 def ping_server(*args):
     subproc_ping = subprocess.Popen(args, stdout=subprocess.PIPE)
     for line in subproc_ping.stdout:
-        line = line.decode('cp866').encode('utf-8')
+        res = detect(line)
+        line = line.decode(res['encoding']).encode('utf-8')
         print(line.decode('utf-8'))
 
 ping_server(*args_1)
