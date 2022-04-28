@@ -1,0 +1,12 @@
+fields:
+- id
+- action
+- to
+- from
+- encoding
+- message
+total: 4321
+price:
+  service1: 99₽
+  service2: 15€
+  service3: 40¥
