@@ -4,8 +4,10 @@ from common.utils import get_message, send_message
 import time
 import argparse
 import json
+import logging
+import log.client_log_config
 
-
+client_logging = logging.getLogger('client_log')
 
 def create_presence(account_name='Guest'):
     """Создание сообщения о присутствии"""
@@ -16,12 +18,14 @@ def create_presence(account_name='Guest'):
             ACCOUNT_NAME: account_name
         }
     }
+    client_logging.debug(f'Сообщение {PRESENCE} сформировано для пользователя {account_name}')
     return presence_message
 
 
 def answer_from_server(message):
     """Функция проверяет ответ от сервера. 
     Выдаёт 200, если ответ корректен или 400 при ошибке"""
+    client_logging.debug(f'Сообщение от сервера {message}')
     if RESPONSE in message:
         if message[RESPONSE] == 200:
             return '200 : OK'
@@ -38,14 +42,16 @@ def main():
 
     client_socket = socket(AF_INET, SOCK_STREAM)
     client_socket.connect((args.ip, args.PORT))
+    client_logging.info(f'Клиент запущен с параметрами: адрес сервера - {args.ip}, порт - {args.PORT}')
     message_to_server = create_presence()
     send_message(client_socket, message_to_server)
 
     try:
         answer = answer_from_server(get_message(client_socket))
+        client_logging.info(f'Принят ответ от сервера: {answer}')
         print(answer)
     except (ValueError, json.JSONDecodeError):
-        print('Не удалось декодировать сообщение сервера.')
+        client_logging.error('Не удалось декодировать сообщение сервера.')
 
     client_socket.close()
 

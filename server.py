@@ -3,10 +3,17 @@ from common.constants import *
 from common.utils import get_message, send_message
 import argparse
 import json
+import log.server_log_config
+import logging
+import log.server_log_config
+
+
+server_logger = logging.getLogger('server_log')
 
 
 def message_to_client(message):
     """ Функция формирует ответ клиенту в виде JSON"""
+    server_logger.debug(f'Сообщение клиенту: {message}')
     if ACTION in message and message[ACTION] == PRESENCE and TIME in message \
             and USER in message and message[USER][ACCOUNT_NAME] == 'Guest':
         return {RESPONSE: 200}
@@ -32,15 +39,18 @@ def main():
 
     while True:
         client, client_address = server_socket.accept()
+        server_logger.info(f'Установлено соединение с {client_address}')
         try:
             message_from_client = get_message(client)
+            server_logger.debug(f'Получено сообщение {message_from_client}')
             print(message_from_client)
             response = message_to_client(message_from_client)
+            server_logger.debug(f'Сформирован ответ клиенту {response}')
             send_message(client, response)
             print(response)
             client.close()
         except (ValueError, json.JSONDecodeError):
-            print('Принято некорректное сообщение от клиента.')
+            server_logger.error('Принято некорректное сообщение от клиента.')
             client.close()
 
 
