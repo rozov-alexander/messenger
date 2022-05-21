@@ -6,11 +6,13 @@ import json
 import log.server_log_config
 import logging
 import log.server_log_config
+from decor import log
 
 
 server_logger = logging.getLogger('server_log')
 
 
+@log
 def message_to_client(message):
     """ Функция формирует ответ клиенту в виде JSON"""
     server_logger.debug(f'Сообщение клиенту: {message}')
@@ -23,6 +25,7 @@ def message_to_client(message):
     }
 
 
+@log
 def main():
 
     parser = argparse.ArgumentParser(description="Server script")

@@ -6,9 +6,13 @@ import argparse
 import json
 import logging
 import log.client_log_config
+from decor import log
+
 
 client_logging = logging.getLogger('client_log')
 
+
+@log
 def create_presence(account_name='Guest'):
     """Создание сообщения о присутствии"""
     presence_message = {
@@ -22,6 +26,7 @@ def create_presence(account_name='Guest'):
     return presence_message
 
 
+@log
 def answer_from_server(message):
     """Функция проверяет ответ от сервера. 
     Выдаёт 200, если ответ корректен или 400 при ошибке"""
@@ -32,6 +37,8 @@ def answer_from_server(message):
         return f'400 : {message[ERROR]}'
     raise ValueError
 
+
+@log
 def main():
         
     parser = argparse.ArgumentParser(description="Client script")
