@@ -1,7 +1,9 @@
 from common.constants import *
 import json
+from decor import log
 
 
+@log
 def get_message(client):
     """
     Утилита приёма и декодирования сообщения.
@@ -21,6 +23,7 @@ def get_message(client):
     raise ValueError
 
 
+@log
 def send_message(client, message):
     """
     Утилита кодирования и отправки сообщения:

@@ -3,6 +3,7 @@ import sys
 import log.server_log_config
 import log.client_log_config
 import datetime
+import traceback
 
 
 def log(func):
@@ -11,7 +12,8 @@ def log(func):
         logger = logging.getLogger(logger_name)
 
         res = func(*args, **kwargs)
-        logger.debug(f'Функция {func.__name__} была вызвана из {func.__module__}' 
-                    f'с аргументами {args} {kwargs} в {datetime.datetime.now()}')
+        logger.debug(f'Функция {func.__name__} была вызвана в модуле {func.__module__}' 
+                    f'с аргументами {args} {kwargs} в {datetime.datetime.now()}'
+                    f'из функции {traceback.format_stack()[0].strip().split()[-1]}.')
         return res
     return wrapper
